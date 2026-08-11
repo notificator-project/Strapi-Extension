@@ -36,5 +36,17 @@ jobs:
             throw new Error('Release tag ' + tag + ' does not match package version v' + version);
           }"
 
+      - name: Check npm registry
+        id: registry
+        run: |
+          package_spec=$(node -p "const { name, version } = require('./package.json'); name + '@' + version")
+          if npm view "$package_spec" version --json > /dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "$package_spec is already available on npm; skipping publication."
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish package
+        if: steps.registry.outputs.published != 'true'
         run: npm publish
