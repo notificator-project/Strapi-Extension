@@ -1,0 +1,106 @@
+{
+  "name": "@notificator-project/strapi-extension",
+  "version": "0.1.0",
+  "description": "Create notifications from Strapi events and deliver them through Notificator.",
+  "license": "MIT",
+  "author": "Vagelis Papaioannou <hello@vagelis.dev>",
+  "funding": "https://buymeacoffee.com/vagelis",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notificator-project/Strapi-Extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/notificator-project/Strapi-Extension/issues"
+  },
+  "homepage": "https://github.com/notificator-project/Strapi-Extension#readme",
+  "keywords": [
+    "strapi",
+    "strapi-5",
+    "strapi-plugin",
+    "cms",
+    "notifications",
+    "push-notifications",
+    "content-events",
+    "mqtt",
+    "iot",
+    "notificator"
+  ],
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0 <=26.x.x",
+    "npm": ">=6.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "strapi": {
+    "kind": "plugin",
+    "name": "notificator",
+    "displayName": "Notificator",
+    "description": "Create notifications from Strapi events and deliver them through Notificator."
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "types": "./dist/admin/src/index.d.ts",
+      "source": "./admin/src/index.ts",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
+    "./strapi-server": {
+      "types": "./dist/server/src/index.d.ts",
+      "source": "./server/src/index.ts",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "scripts": {
+    "build": "strapi-plugin build",
+    "watch": "strapi-plugin watch",
+    "watch:link": "strapi-plugin watch:link",
+    "verify": "strapi-plugin verify",
+    "test": "tsx --test tests/**/*.test.ts",
+    "test:ts:front": "tsc -p admin/tsconfig.json --noEmit",
+    "test:ts:back": "tsc -p server/tsconfig.json --noEmit",
+    "format": "prettier --write \"{admin,server,tests}/**/*.{ts,tsx}\" \"{README,CONTRIBUTING}.md\" \"docs/**/*.md\" \"*.json\"",
+    "format:check": "prettier --check \"{admin,server,tests}/**/*.{ts,tsx}\" \"{README,CONTRIBUTING}.md\" \"docs/**/*.md\" \"*.json\"",
+    "release:check": "npm run format:check && npm test && npm run test:ts:front && npm run test:ts:back && npm run build && npm run verify",
+    "prepublishOnly": "npm run release:check"
+  },
+  "peerDependencies": {
+    "@strapi/design-system": "^2.2.4",
+    "@strapi/icons": "^2.2.4",
+    "@strapi/sdk-plugin": "^6.1.1",
+    "@strapi/strapi": "^5.51.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-intl": "^6.8.9",
+    "react-router-dom": "^6.30.4",
+    "styled-components": "^6.5.1"
+  },
+  "devDependencies": {
+    "@strapi/design-system": "^2.2.4",
+    "@strapi/icons": "^2.2.4",
+    "@strapi/sdk-plugin": "^6.1.1",
+    "@strapi/strapi": "^5.51.2",
+    "@strapi/typescript-utils": "^5.51.2",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "prettier": "^3.9.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-intl": "^6.8.9",
+    "react-router-dom": "^6.30.4",
+    "styled-components": "^6.5.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "yalc": "^1.0.0-pre.53"
+  }
+}
