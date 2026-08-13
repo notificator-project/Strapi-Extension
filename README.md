@@ -132,19 +132,16 @@ export default ({ env }) => ({
   notificator: {
     enabled: true,
     config: {
-      enabled: env.bool("NOTIFICATOR_ENABLED", true),
-      apiKey: env("NOTIFICATOR_API_KEY", ""),
-      origin: env("PUBLIC_URL", ""),
-      requestTimeoutMs: env.int("NOTIFICATOR_TIMEOUT_MS", 8000),
+      enabled: env.bool('NOTIFICATOR_ENABLED', true),
+      apiKey: env('NOTIFICATOR_API_KEY', ''),
+      origin: env('PUBLIC_URL', ''),
+      requestTimeoutMs: env.int('NOTIFICATOR_TIMEOUT_MS', 8000),
       mqtt: {
-        enabled: env.bool("NOTIFICATOR_MQTT_ENABLED", false),
-        host: env("NOTIFICATOR_MQTT_HOST", ""),
-        username: env("NOTIFICATOR_MQTT_USERNAME", ""),
-        password: env("NOTIFICATOR_MQTT_PASSWORD", ""),
-        topicPrefix: env(
-          "NOTIFICATOR_MQTT_TOPIC_PREFIX",
-          "notificator-project",
-        ),
+        enabled: env.bool('NOTIFICATOR_MQTT_ENABLED', false),
+        host: env('NOTIFICATOR_MQTT_HOST', ''),
+        username: env('NOTIFICATOR_MQTT_USERNAME', ''),
+        password: env('NOTIFICATOR_MQTT_PASSWORD', ''),
+        topicPrefix: env('NOTIFICATOR_MQTT_TOPIC_PREFIX', 'notificator-project'),
       },
     },
   },
