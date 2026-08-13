@@ -109,10 +109,10 @@ release, review version changes before upgrading an existing installation.
 ### Get a Notificator account and API key
 
 Notificator accounts and API keys are managed through the mobile app. Install
-the Notificator app, create or sign in to an account, and create a server API
-key for the Strapi installation. Add that key to the Strapi server environment
-as `NOTIFICATOR_API_KEY`; do not paste it into browser-side admin fields or
-commit it to the repository.
+the Notificator app, create or sign in to an account, and create a **Strapi
+Extension** (`strapi_server`) API key for the Strapi installation. Add that key
+to the Strapi server environment as `NOTIFICATOR_API_KEY`; do not paste it into
+browser-side admin fields or commit it to the repository.
 
 See the [mobile app page](https://notificator-project.com/mobile-app/) for the
 current iOS and Android availability.
