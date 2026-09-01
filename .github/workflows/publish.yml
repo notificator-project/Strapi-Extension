@@ -36,6 +36,12 @@ jobs:
             throw new Error('Release tag ' + tag + ' does not match package version v' + version);
           }"
 
+      - name: Verify package
+        run: npm run release:check
+
+      - name: Inspect package contents
+        run: npm pack --dry-run
+
       - name: Check npm registry
         id: registry
         run: |
@@ -49,4 +55,8 @@ jobs:
 
       - name: Publish package
         if: steps.registry.outputs.published != 'true'
-        run: npm publish
+        run: npm publish --access public --provenance
+
+      - name: Confirm existing package
+        if: steps.registry.outputs.published == 'true'
+        run: echo "Skipping npm publish because this version is already public."
