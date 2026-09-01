@@ -8,14 +8,14 @@ what content to watch, when an alert should be created, what it should say, and
 where it should be delivered. Rules can keep activity inside Strapi or extend
 it to the Notificator inbox, mobile push, email, and compatible IoT devices.
 
-> **Status:** `0.1.1` early development preview. The extension is ready for integration
+> **Status:** Early development preview. The extension is ready for integration
 > testing with Strapi 5, but it should not be the only record of a critical
 > business or security event.
 
 The current package is available from
 [npm](https://www.npmjs.com/package/@notificator-project/strapi-extension), with
 release notes published in the
-[GitHub 0.1.1 release](https://github.com/notificator-project/Strapi-Extension/releases/tag/v0.1.1).
+[latest GitHub release](https://github.com/notificator-project/Strapi-Extension/releases/latest).
 
 ## Why use it?
 
