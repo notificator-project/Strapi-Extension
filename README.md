@@ -8,9 +8,8 @@ what content to watch, when an alert should be created, what it should say, and
 where it should be delivered. Rules can keep activity inside Strapi or extend
 it to the Notificator inbox, mobile push, email, and compatible IoT devices.
 
-> **Status:** Early development preview. The extension is ready for integration
-> testing with Strapi 5, but it should not be the only record of a critical
-> business or security event.
+> **Status:** Stable `1.0.0` release for Strapi 5. Continue to use a separate
+> operational path for critical business or security events.
 
 The current package is available from
 [npm](https://www.npmjs.com/package/@notificator-project/strapi-extension), with
@@ -27,9 +26,9 @@ release notes published in the
   Notificator API key. External delivery can be enabled when it is needed.
 - **One event, several destinations.** Keep an event in the Notificator inbox,
   send a mobile or email alert, and forward it to an IoT device through MQTT.
-- **User-owned MQTT.** Device delivery currently uses the administrator's own
-  HiveMQ Cloud cluster, keeping broker ownership and credentials under their
-  control.
+- **Account-managed or custom MQTT.** Device delivery can reuse the encrypted
+  HiveMQ Cloud connection saved to the API-key owner's Notificator account, or
+  use an explicitly configured custom cluster.
 - **Safe failure behavior.** Notification delivery runs after a successful
   Strapi operation. A delivery failure is logged without preventing content
   from being saved.
@@ -108,8 +107,7 @@ Install the extension from the Strapi application's directory:
 npm install @notificator-project/strapi-extension
 ```
 
-Then add the configuration below and restart Strapi. Until the first stable
-release, review version changes before upgrading an existing installation.
+Then add the configuration below and restart Strapi.
 
 ### Get a Notificator account and API key
 
@@ -140,6 +138,7 @@ export default ({ env }) => ({
       requestTimeoutMs: env.int('NOTIFICATOR_TIMEOUT_MS', 8000),
       mqtt: {
         enabled: env.bool('NOTIFICATOR_MQTT_ENABLED', false),
+        useAccount: env.bool('NOTIFICATOR_MQTT_USE_ACCOUNT', false),
         host: env('NOTIFICATOR_MQTT_HOST', ''),
         username: env('NOTIFICATOR_MQTT_USERNAME', ''),
         password: env('NOTIFICATOR_MQTT_PASSWORD', ''),
@@ -166,6 +165,7 @@ treated as secrets, though keeping the MQTT username private is also sensible.
 | `PUBLIC_URL`                    | Recommended for remote delivery | Empty                 | Public origin of the Strapi application, such as `https://cms.example.com`.                   |
 | `NOTIFICATOR_TIMEOUT_MS`        | No                              | `8000`                | Remote request timeout in milliseconds. Accepted range: `1000` to `30000`.                    |
 | `NOTIFICATOR_MQTT_ENABLED`      | No                              | `false`               | Enables the MQTT configuration used by rules with the MQTT channel selected.                  |
+| `NOTIFICATOR_MQTT_USE_ACCOUNT`  | No                              | `false`               | Uses the encrypted HiveMQ connection saved to the API-key owner's Notificator account.        |
 | `NOTIFICATOR_MQTT_HOST`         | When MQTT is enabled            | Empty                 | HiveMQ Cloud hostname only, without a protocol, port, or path.                                |
 | `NOTIFICATOR_MQTT_USERNAME`     | When MQTT is enabled            | Empty                 | Username created for the HiveMQ Cloud cluster.                                                |
 | `NOTIFICATOR_MQTT_PASSWORD`     | When MQTT is enabled            | Empty                 | Secret password created for the HiveMQ Cloud cluster.                                         |
@@ -222,17 +222,24 @@ application's `.env` file and restart Strapi:
 
 ```dotenv
 NOTIFICATOR_MQTT_ENABLED=true
+NOTIFICATOR_MQTT_USE_ACCOUNT=true
 NOTIFICATOR_MQTT_HOST=your-cluster.s1.eu.hivemq.cloud
 NOTIFICATOR_MQTT_USERNAME=your-cluster-username
 NOTIFICATOR_MQTT_PASSWORD=your-cluster-password
 NOTIFICATOR_MQTT_TOPIC_PREFIX=notificator-project
 ```
 
-The MQTT password remains in the Strapi server environment. For an MQTT-enabled
-rule, the extension includes the connection only in its signed HTTPS request.
-The Notificator API uses it for that delivery and does not persist it in the API
-database. If the MQTT configuration is incomplete, MQTT is skipped while the
-other configured channels continue.
+With `NOTIFICATOR_MQTT_USE_ACCOUNT=true`, the extension asks the API to use the
+encrypted HiveMQ connection saved to the same Notificator account as the
+`strapi_server` API key. No broker credentials are copied into Strapi. The API
+skips MQTT when no saved account connection exists while the other configured
+channels continue. Leave this toggle disabled to use the custom broker values
+below instead.
+
+When using the custom path, the MQTT password remains in the Strapi server
+environment. For an MQTT-enabled rule, the extension includes the connection
+only in its signed HTTPS request. The Notificator API uses it for that delivery
+and does not persist it in the API database.
 
 HiveMQ Cloud uses TLS WebSockets on port `8884` and path `/mqtt`; these fixed
 transport values do not need environment variables. Create the cluster access

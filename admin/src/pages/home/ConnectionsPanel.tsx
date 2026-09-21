@@ -47,9 +47,11 @@ export const ConnectionsPanel = ({ connection }: { connection: ConnectionState }
         </Flex>
         <Box paddingTop={2}>
           <Typography textColor="neutral600">
-            {connection.mqtt.ready
-              ? `${connection.mqtt.host} · ${connection.mqtt.topicPrefix}`
-              : 'Set the NOTIFICATOR_MQTT_* environment values to deliver alerts to your devices.'}
+            {connection.mqtt.useAccount && connection.mqtt.enabled
+              ? 'Uses the saved Notificator account MQTT connection automatically.'
+              : connection.mqtt.ready
+                ? `${connection.mqtt.host} · ${connection.mqtt.topicPrefix}`
+                : 'Set the NOTIFICATOR_MQTT_* environment values to deliver alerts to your devices.'}
           </Typography>
         </Box>
       </ChannelCard>

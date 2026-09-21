@@ -1,6 +1,6 @@
 {
   "name": "@notificator-project/strapi-extension",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Create notifications from Strapi events and deliver them through Notificator.",
   "license": "MIT",
   "author": "Vagelis Papaioannou <hello@vagelis.dev>",
@@ -42,6 +42,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {

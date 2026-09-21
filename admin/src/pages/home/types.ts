@@ -49,6 +49,7 @@ export type ConnectionState = {
   originConfigured: boolean;
   mqtt: {
     enabled: boolean;
+    useAccount: boolean;
     configured: boolean;
     ready: boolean;
     host: string;

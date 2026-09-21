@@ -57,6 +57,7 @@ export type PluginConfig = {
   requestTimeoutMs: number;
   mqtt: {
     enabled: boolean;
+    useAccount: boolean;
     host: string;
     username: string;
     password: string;

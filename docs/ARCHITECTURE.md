@@ -109,9 +109,12 @@ Entry data is untrusted. Template resolution:
 ### Strapi to the Notificator API
 
 Every remote request includes a timestamp, nonce, and HMAC-SHA256 signature over
-the exact serialized body. The API key and optional HiveMQ credentials remain in
-server configuration. When MQTT is requested but incomplete, only MQTT is
-disabled; other selected channels continue.
+the exact serialized body. The API key and optional custom HiveMQ credentials
+remain in server configuration. Deployments may instead set the account-MQTT
+toggle, in which case the signed request contains only
+`mqttConnection: { mode: "account" }` and the hosted API resolves the encrypted
+connection owned by the API-key account. When MQTT is requested but unavailable,
+only MQTT is disabled; other selected channels continue.
 
 ## Configuration model
 
@@ -119,7 +122,8 @@ Configuration is validated at Strapi startup. Production delivery is fixed to
 the official Notificator API endpoint. Development can deliberately override it
 with HTTPS or a local endpoint. Timeouts are bounded between 1 and 30 seconds.
 MQTT currently targets HiveMQ Cloud's TLS WebSocket service and validates the
-hostname and topic prefix before Strapi starts.
+hostname and topic prefix before Strapi starts for custom connections. Account
+connections are validated and decrypted only by the hosted API.
 
 ## Extension points
 

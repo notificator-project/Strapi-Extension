@@ -13,6 +13,7 @@ const baseConfig: PluginConfig = {
   requestTimeoutMs: 1_000,
   mqtt: {
     enabled: true,
+    useAccount: false,
     host: '',
     username: '',
     password: '',
@@ -76,5 +77,28 @@ describe('remote delivery', () => {
       deliveryService({ strapi: { config: { get: () => incomplete } } as never }).send({}),
       /not configured/
     );
+  });
+
+  it('requests account-managed MQTT without sending broker credentials', async () => {
+    const originalFetch = globalThis.fetch;
+    let body: Record<string, unknown> | undefined;
+    globalThis.fetch = async (_url, init) => {
+      body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+
+    try {
+      const config = {
+        ...baseConfig,
+        mqtt: { ...baseConfig.mqtt, useAccount: true },
+      };
+      const strapi = { config: { get: () => config } } as never;
+      await deliveryService({ strapi }).send({ title: 'Published', sendMqtt: true });
+
+      assert.deepEqual(body?.mqttConnection, { mode: 'account', status: 'ready' });
+      assert.equal('mqttConfig' in (body ?? {}), false);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

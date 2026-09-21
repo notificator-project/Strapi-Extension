@@ -18,6 +18,7 @@ const defaults: PluginConfig = {
   requestTimeoutMs: 8_000,
   mqtt: {
     enabled: false,
+    useAccount: false,
     host: '',
     username: '',
     password: '',

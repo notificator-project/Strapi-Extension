@@ -133,11 +133,13 @@ export const renderTemplate = (template: string, context: TemplateContext): stri
 export const getMqttState = (config: PluginConfig) => {
   const mqtt = config.mqtt;
   const configured = Boolean(mqtt?.host && mqtt.username && mqtt.password && mqtt.topicPrefix);
+  const useAccount = Boolean(mqtt?.useAccount);
 
   return {
     enabled: Boolean(mqtt?.enabled),
-    configured,
-    ready: Boolean(mqtt?.enabled && configured),
+    useAccount,
+    configured: useAccount || configured,
+    ready: Boolean(mqtt?.enabled && (useAccount || configured)),
     host: mqtt?.host || '',
     topicPrefix: mqtt?.topicPrefix || 'notificator-project',
   };
@@ -252,17 +254,21 @@ const deliveryService = ({ strapi }: { strapi: Core.Strapi }) => ({
     if (preparedPayload.sendMqtt === true) {
       const mqtt = getMqttState(config);
       if (mqtt.ready) {
-        preparedPayload.mqttConnection = { mode: 'custom', status: 'ready' };
-        preparedPayload.mqttConfig = {
-          version: 1,
-          provider: 'hivemq_cloud',
-          host: config.mqtt.host.trim().toLowerCase().replace(/\.$/, ''),
-          port: 8884,
-          path: '/mqtt',
-          username: config.mqtt.username.trim(),
-          password: config.mqtt.password,
-          topicPrefix: config.mqtt.topicPrefix.trim().replace(/^\/+|\/+$/g, ''),
-        };
+        if (mqtt.useAccount) {
+          preparedPayload.mqttConnection = { mode: 'account', status: 'ready' };
+        } else {
+          preparedPayload.mqttConnection = { mode: 'custom', status: 'ready' };
+          preparedPayload.mqttConfig = {
+            version: 1,
+            provider: 'hivemq_cloud',
+            host: config.mqtt.host.trim().toLowerCase().replace(/\.$/, ''),
+            port: 8884,
+            path: '/mqtt',
+            username: config.mqtt.username.trim(),
+            password: config.mqtt.password,
+            topicPrefix: config.mqtt.topicPrefix.trim().replace(/^\/+|\/+$/g, ''),
+          };
+        }
       } else {
         // Preserve the other delivery channels when MQTT is not ready.
         preparedPayload.sendMqtt = false;
